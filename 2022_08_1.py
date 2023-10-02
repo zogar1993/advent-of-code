@@ -9,31 +9,34 @@ row_length = len(lines[0])
 visible_trees_matrix = [[True for _ in range(row_length)] for _ in lines]
 
 for y in range(len(lines)):
+    highest_tree = 9
     highest = -1
     for x in range(row_length):
         if lines[y][x] > highest:
             highest = lines[y][x]
             visible_trees_matrix[y][x] = False
-        if highest == 9:
-            break
+            if lines[y][x] == highest_tree:
+                break
+    highest_tree = highest
 
     highest = -1
     for x in range(row_length - 1, -1, -1):
         if lines[y][x] > highest:
             highest = lines[y][x]
             visible_trees_matrix[y][x] = False
-        if highest == 9:
-            break
+            if highest == highest_tree:
+                break
 
 result = 0
 for x in range(row_length):
+    highest_tree = 9
     highest = -1
     for y in range(len(lines)):
         if lines[y][x] > highest:
             highest = lines[y][x]
             visible_trees_matrix[y][x] = False
-        if highest == 9:
-            break
+            if highest == highest_tree:
+                break
 
     highest = -1
     for y in range(len(lines) - 1, -1, -1):
