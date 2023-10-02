@@ -34,12 +34,13 @@ for line in  lines:
             current["."] += size
             occupied_space += size
 
-print(occupied_space)
 folder_sizes = []
 
-
 DISK_SPACE = 70000000
-required_space = DISK_SPACE - occupied_space
+TOTAL_REQUIRED_SPACE = 30000000
+required_space = TOTAL_REQUIRED_SPACE - (DISK_SPACE - occupied_space)
+
+stack = []
 
 def get_size_and_add_to_result(directory):
     for dir in directory.keys():
@@ -54,8 +55,6 @@ def get_size_and_add_to_result(directory):
     return directory["."]
 
 get_size_and_add_to_result(tree)
-
-print(folder_sizes)
 
 result = min(folder_sizes)
 
