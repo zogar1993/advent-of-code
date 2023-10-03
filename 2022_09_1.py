@@ -10,7 +10,6 @@ tail_x = 0
 tail_y = 0
 
 unique_tail_positions = {"0_0"}
-array = ["0_0 0_0"]
 
 for line in lines:
     for _ in range(int(line[1])):
@@ -33,10 +32,7 @@ for line in lines:
                 tail_y += 1
             elif head_y < tail_y:
                 tail_y -= 1
-        array.append(str(head_x) + "_" + str(head_y) + " " + str(tail_x) + "_" + str(tail_y))
-        unique_tail_positions.add(str(tail_x) + "_" + str(tail_y))
 
-for item in array:
-    print(item)
+        unique_tail_positions.add(str(tail_x) + "_" + str(tail_y))
 
 print(len(unique_tail_positions))
