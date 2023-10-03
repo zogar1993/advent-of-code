@@ -1,9 +1,11 @@
+import time
+
+start = time.time()
+
 with open('2022_08.txt', 'r') as file:
     text = file.read()
 
-
 lines = [[int(char) for char in line] for line in text.split("\n")]
-
 
 length = len(lines)
 result = 0
@@ -34,5 +36,8 @@ for y in range(1, length - 1):
 
         if score > result:
             result = score
+
+end = time.time()
+print("time: " + '%.3f'%(end - start))
 
 print(result)
