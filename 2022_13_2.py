@@ -51,6 +51,5 @@ for i in range(length):
     if divider_2 is packages[i]:
         result *= i + 1
         break
-print(packages)
 
 print(result)
