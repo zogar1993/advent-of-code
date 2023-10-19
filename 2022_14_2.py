@@ -21,14 +21,15 @@ for rock_line in rock_lines:
         if rock["y"] > max_y:
             max_y = rock["y"]
 
-x_length = max_x - min_x + 1
-y_length = max_y - min_y + 1
+x_length = max_x - min_x + 1 + 4  # Pad 1 for each side for sand fall, pad 1 more each side for infinity indicator (X)
+y_length = max_y - min_y + 1 + 2  # Pad 2 since floor is 2 tiles below cave
 for rock_line in rock_lines:
     for rock in rock_line:
         rock["x"] -= min_x
         rock["y"] -= min_y
 
-cave = [["." for _ in range(x_length)] for _ in range(y_length)]
+cave = [["." if 0 < i < x_length - 1 else "X" for i in range(x_length)] for _ in range(y_length)]
+cave[-1] = ["#" for _ in range(x_length)]
 
 for rock_line in rock_lines:
     for i in range(len(rock_line) - 1):
@@ -39,49 +40,61 @@ for rock_line in rock_lines:
         y_direction = 1 if rock_a["y"] < rock_b["y"] else -1
         for x in range(rock_a["x"], rock_b["x"] + x_direction, x_direction):
             for y in range(rock_a["y"], rock_b["y"] + y_direction, y_direction):
-                cave[y][x] = "#"
+                cave[y][x + 2] = "#"  # Pad 2 for sand fall tile and infinity indicator
 
-sand_starting_x = 500 - min_x
+sand_starting_x = 500 - min_x + 2  # Pad 2 for sand fall tile and infinity indicator
 cave[0][sand_starting_x] = "+"
 
 sand_path = [{"x": sand_starting_x, "y": 0}]
 sand_count = 0
 
+
+def add_sand():
+    global sand_path
+    global sand_count
+    sand = sand_path.pop()
+    sand_count += 1
+    cave[sand["y"]][sand["x"]] = "O"
+
+
 while True:
+    if len(sand_path) == 0:
+        break
+
     current_sand = sand_path[-1]
     x = current_sand["x"]
     y = current_sand["y"]
 
     y += 1
     if y >= y_length:
-        break
+        add_sand()
+        continue
+
     if cave[y][x] == ".":
         sand_path.append({"x": x, "y": y})
         continue
 
     x -= 1
-    if x < 0:
-        break
+    if cave[y][x] == "X":
+        cave[y][x] = "O"
+        sand_count += y_length - y - 1
+        continue
+
     if cave[y][x] == ".":
         sand_path.append({"x": x, "y": y})
         continue
 
     x += 2
-    if x >= x_length:
-        break
+    if cave[y][x] == "X":
+        cave[y][x] = "O"
+        sand_count += y_length - y - 1
+        continue
+
     if cave[y][x] == ".":
         sand_path.append({"x": x, "y": y})
         continue
 
-    x -= 1
-    y -= 1
-    sand_count += 1
-    cave[y][x] = "O"
-    sand_path.pop()
-
-sand_path.pop(0)
-for sand in sand_path:
-    cave[sand["y"]][sand["x"]] = "~"
+    add_sand()
 
 for i in range(len(cave)):
     line = cave[i]
