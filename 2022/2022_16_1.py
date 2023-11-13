@@ -20,6 +20,15 @@ maximum = 0
 maximum_actions = []
 
 
+def end_of_the_road(pressure_released, actions):
+    global maximum
+    if maximum < pressure_released:
+        maximum = pressure_released
+        global maximum_actions
+        maximum_actions = actions
+    return
+
+
 def release_valve(current_valve, pressure_released, minutes, unreleasable, actions):
     minutes -= 1
     unreleasable = unreleasable | {current_valve}
@@ -28,12 +37,7 @@ def release_valve(current_valve, pressure_released, minutes, unreleasable, actio
     actions = actions + ["at " + str(minutes) + " release " + current_valve + " (" + str(minutes) + " * " + str(valves[current_valve]["rate"]) + " = " + str(release_value) + ")"]
 
     if minutes == 0:
-        global maximum
-        if maximum < pressure_released:
-            maximum = pressure_released
-            global maximum_actions
-            maximum_actions = actions
-        return
+        return end_of_the_road(pressure_released, actions)
 
     for valve in valves[current_valve]["destinations"]:
             traverse_tunnel(valve, pressure_released, minutes, unreleasable, {current_valve}, actions)
@@ -45,12 +49,7 @@ def traverse_tunnel(current_valve, pressure_released, minutes, unreleasable, unt
     actions = actions + ["at " + str(minutes) + " traverse " + current_valve]
 
     if minutes == 0:
-        global maximum
-        if maximum < pressure_released:
-            maximum = pressure_released
-            global maximum_actions
-            maximum_actions = actions
-        return
+        return end_of_the_road(pressure_released, actions)
 
     if current_valve not in unreleasable:
         release_valve(current_valve, pressure_released, minutes, unreleasable, actions)
